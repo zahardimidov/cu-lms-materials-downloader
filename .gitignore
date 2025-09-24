@@ -1,6 +1,9 @@
-__pycache__
+__pycache__/
 .DS_Store
 example.py
 headers.json
 test.py
 .gitignore
+venv/
+.venv/
+downloads/
