@@ -1,3 +1,4 @@
+import datetime
 import json
 import re
 
@@ -54,6 +55,16 @@ class File(BaseModel):
     length: int
 
 
+class Task(BaseModel):
+    id: int
+    name: str
+    state: str
+    deadline: datetime.datetime
+
+    def __str__(self):
+        return f'Task({self.id}, {self.name}, {self.state}, {self.deadline})'
+
+
 class LMS:
     def __init__(self):
         self.base_url = "https://my.centraluniversity.ru"
@@ -66,6 +77,23 @@ class LMS:
             return print("!!! Try to set Cookie")
 
         return response
+
+    def get_tasks(
+        self, states=["failed", "backlog", "review", "inProgress", "evaluated"]
+    ):
+        response = self.get("/api/micro-lms/tasks/student")
+
+        if response.status_code == 200:
+            tasks = [
+                Task(**i, name=i["exercise"]["name"])
+                for i in response.json()
+                if i.get("longread", {}).get("name") == "Домашнее задание"
+                and i["state"] in states
+                and not i["course"].get("isArchived")
+            ]
+
+            return tasks
+        return []
 
     def get_courses(self, _filter=None) -> list[Course]:
         response = self.get(
