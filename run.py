@@ -45,7 +45,7 @@ for course in lms.get_courses(
     _filter=lambda x: all(i not in x.name for i in BLACKLIST)
 ):
     print("\n", course.name)
-    weeks = lms.get_course_weeks(course.id, lambda week: "5" in week.name)
+    weeks = lms.get_course_weeks(course.id, lambda week: "5" in week.name) # FILTER !!!
 
     path = "/Users/zahardimidov/Documents/Учеба/Семестр второй/" + course.path
 
